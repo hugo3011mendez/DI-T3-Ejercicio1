@@ -200,18 +200,10 @@ namespace Ejercicio1
             Console.WriteLine("Escribe la IP del equipo que quieres ver :");
             ip = Console.ReadLine();
 
-            foreach (string de in equipos.Keys)
+            if (equipos.ContainsKey(ip))
             {
-                if (de == ip)
-                {
-                    encontrado = true;
-                    Console.WriteLine("La IP que has intoducido está dentro de la Hashtable");
-                }
-            }
-
-            if (encontrado)
-            {
-            Console.WriteLine("El equipo con la IP {0} tiene {1} GB de RAM", ip, equipos[ip]);
+                Console.WriteLine("La IP que has intoducido está dentro de la Hashtable");
+                Console.WriteLine("El equipo con la IP {0} tiene {1} GB de RAM", ip, equipos[ip]);
             }
             else
             {
@@ -228,17 +220,25 @@ namespace Ejercicio1
         // Función que guarda los equipos de la hashtable en un archivo indicado
         static void guardarEnArchivo(String ruta, Hashtable equipos)
         {
-            if (!File.Exists(ruta))
+            try
             {
                 File.Create(ruta);
-            }
 
-            using (StreamWriter sw = new StreamWriter(ruta))
-            {
-                foreach (DictionaryEntry de in equipos)
+                using (StreamWriter sw = new StreamWriter(ruta))
                 {
-                    sw.WriteLine("{0}|{1}", de.Key, de.Value);
+                    foreach (DictionaryEntry de in equipos)
+                    {
+                        sw.WriteLine("{0}|{1}", de.Key, de.Value);
+                    }
                 }
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine("Error : No se ha encontrado la ruta indicada del archivo");
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("Error al guardar los datos en el archivo");
             }
         }
 
@@ -246,28 +246,42 @@ namespace Ejercicio1
         // Función que carga los equipos de un archivo indicado para meterlos en la hashtable
         static void cargarDeArchivo(String ruta, Hashtable equipos)
         {
-            if (File.Exists(ruta))
+            try
             {
-                string datos;
-                string ip;
-                int ram;
-
-                StreamReader sr = new StreamReader(ruta);
-                datos = sr.ReadLine();
-                while (datos != null)
+                if (File.Exists(ruta))
                 {
-                    ip = datos.Split('|')[0];
-                    ram = Convert.ToInt32(datos.Split('|')[1]);
+                    string datos;
+                    string ip;
+                    int ram;
 
-                    equipos.Add(ip, ram);
-
+                    StreamReader sr = new StreamReader(ruta);
                     datos = sr.ReadLine();
+                    while (datos != null)
+                    {
+                        ip = datos.Split('|')[0];
+                        ram = Convert.ToInt32(datos.Split('|')[1]);
+
+                        if (!equipos.ContainsKey(ip))
+                        {
+                            equipos.Add(ip, ram);
+                        }
+
+                        datos = sr.ReadLine();
+                    }
+                    sr.Close();
                 }
-                sr.Close();
+                else
+                {
+                    File.Create(ruta);
+                }
             }
-            else
+            catch (DirectoryNotFoundException)
             {
-                File.Create(ruta);
+                Console.WriteLine("Error : No se ha encontrado la ruta indicada del archivo");
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("Error al cargar los datos del archivo al programa");
             }
         }
 
