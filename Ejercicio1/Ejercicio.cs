@@ -225,30 +225,29 @@ namespace Ejercicio1
         }
 
 
+        // Función que guarda los equipos de la hashtable en un archivo indicado
         static void guardarEnArchivo(String ruta, Hashtable equipos)
         {
-            if (File.Exists(ruta))
-            {
-                using (StreamWriter sw = new StreamWriter(ruta))
-                {
-                    foreach (DictionaryEntry de in equipos)
-                    {
-                        sw.WriteLine("{0}|{1}", de.Key, de.Value);
-                    }
-                }
-            }
-            else
+            if (!File.Exists(ruta))
             {
                 File.Create(ruta);
+            }
+
+            using (StreamWriter sw = new StreamWriter(ruta))
+            {
+                foreach (DictionaryEntry de in equipos)
+                {
+                    sw.WriteLine("{0}|{1}", de.Key, de.Value);
+                }
             }
         }
 
 
+        // Función que carga los equipos de un archivo indicado para meterlos en la hashtable
         static void cargarDeArchivo(String ruta, Hashtable equipos)
         {
             if (File.Exists(ruta))
             {
-
                 string datos;
                 string ip;
                 int ram;
