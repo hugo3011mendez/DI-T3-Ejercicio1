@@ -330,6 +330,10 @@ namespace Ejercicio1
 
                             guardarEnArchivo("..\\..\\..\\infoEj1.txt", equipos);
                             break;
+
+                        default:
+                            Console.WriteLine("No existe esa opción!");
+                            break;
                     }
                 }
                 catch (OverflowException)
