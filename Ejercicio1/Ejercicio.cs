@@ -39,7 +39,6 @@ namespace Ejercicio1
                 }
 
 
-
                 if (contadorPuntos == 3 && contadorLetras == 0)
                 {
                     try
@@ -131,6 +130,7 @@ namespace Ejercicio1
             return ram;
         }
 
+
         // Creo la función para introducir un nuevo elemento en la Hashtable, que llamará a los otros dos métodos que validan la pedida de datos :
         static void introducirDato(Hashtable equipos)
         {
@@ -139,7 +139,7 @@ namespace Ejercicio1
 
             if (equipos.ContainsKey(ip))
             {
-
+                Console.WriteLine("Esa IP ya ha sido introducida en la Hashtable!");
             }
             else
             {
@@ -164,18 +164,19 @@ namespace Ejercicio1
             {
                 Console.WriteLine("La IP que has intoducido está dentro de la Hashtable");
                 Console.WriteLine("Procediendo a eliminar el equipo...");
-                Console.WriteLine("Pulsa Enter para proceder :");
                 equipos.Remove(ip);
             }
             else
             {
-                Console.WriteLine("No se ha encontrado el elemento que querías eliminar");
+                Console.WriteLine("No se ha encontrado el equipo que querías eliminar");
             }
 
+            Console.WriteLine("Pulsa Enter para proceder :");
             Console.WriteLine();
             Console.WriteLine();
             Console.ReadLine();
         }
+
 
         // Función para recorrer el hashtable y mostrar todos sus elementos
         static void mostrarColeccion(Hashtable equipos)
