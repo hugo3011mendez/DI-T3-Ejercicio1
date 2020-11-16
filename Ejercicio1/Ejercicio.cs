@@ -24,6 +24,7 @@ namespace Ejercicio1
 
                 int contadorPuntos = 0;
                 int contadorLetras = 0;
+
                 for (int i = 0; i < ip.Length; i++)
                 {
                     if (Char.IsLetter(ip[i]))
@@ -62,12 +63,18 @@ namespace Ejercicio1
                             verificadaIP = true;
                         }
                     }
-                    catch (Exception e)
+                    // Así solo capturo las excepciones que me interesan
+                    catch (OverflowException)
                     {
-                        Console.WriteLine("Ha saltado la excepción {0}", e.Message);
                         verificadaIP = false;
-                        Console.WriteLine("Formato de IP incorrecto, vuelve a escribirla");
+                        Console.WriteLine("Formato de IP incorrecto, has escrito un número demasiado grande");
                         Console.WriteLine();
+                        Console.WriteLine();
+                    }
+                    catch (FormatException)
+                    {
+                        verificadaIP = false;
+                        Console.WriteLine("Formato de IP incorrecto, has escrito un caracter no permitido para una IP");
                         Console.WriteLine();
                     }
                 }
@@ -90,9 +97,9 @@ namespace Ejercicio1
             bool verificado = false;
             int ram = 0;
 
-            try
+            while (!verificado)
             {
-                while (!verificado)
+                try
                 {
                     Console.WriteLine("Escribe la cantidad de memoria RAM en GB que tiene el equipo :");
                     ram = Convert.ToInt32(Console.ReadLine());
@@ -109,15 +116,19 @@ namespace Ejercicio1
                         verificado = true;
                     }
                 }
-
-                return ram;
+                catch (OverflowException)
+                {
+                    verificado = false;
+                    Console.WriteLine("Has escrito un número demasiado grande, anda con más cuidado!");
+                }
+                catch (FormatException)
+                {
+                    verificado = false;
+                    Console.WriteLine("El formato del número de memoria RAM es incorrecto, vuelve a escribirlo!");
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine("Ha ocurrido la excepción " + e.Message);
-                throw;
-            }
 
+            return ram;
         }
 
         // Creo la función para introducir un nuevo elemento en la Hashtable, que llamará a los otros dos métodos que validan la pedida de datos :
@@ -126,36 +137,34 @@ namespace Ejercicio1
             string ip = escribirIP();
             int ram = escribirRAM();
 
-            equipos.Add(ip, ram);
-            Console.WriteLine("Los datos del nuevo equipo se han introducido con éxito");
-            Console.WriteLine("Escribe Enter para continuar : ");
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.ReadLine();
+            if (equipos.ContainsKey(ip))
+            {
+
+            }
+            else
+            {
+                equipos.Add(ip, ram);
+                Console.WriteLine("Los datos del nuevo equipo se han introducido con éxito");
+                Console.WriteLine("Escribe Enter para continuar : ");
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.ReadLine();
+            }
         }
 
 
         // Función para eliminar un elemento de la Hashtable :
         static void eliminarDato(Hashtable equipos)
         {
-            bool encontrado = false;
 
             Console.WriteLine("Escribe la IP del equipo que quiere eliminar : ");
             string ip = Console.ReadLine();
 
-            foreach (string de in equipos.Keys)
+            if (equipos.ContainsKey(ip))
             {
-                if (de == ip)
-                {
-                    encontrado = true;
-                    Console.WriteLine("La IP que has intoducido está dentro de la Hashtable");
-                    Console.WriteLine("Procediendo a eliminar el equipo...");
-                    Console.WriteLine("Pulsa Enter para proceder :");
-                }
-            }
-
-            if (encontrado)
-            {
+                Console.WriteLine("La IP que has intoducido está dentro de la Hashtable");
+                Console.WriteLine("Procediendo a eliminar el equipo...");
+                Console.WriteLine("Pulsa Enter para proceder :");
                 equipos.Remove(ip);
             }
             else
@@ -268,8 +277,7 @@ namespace Ejercicio1
         {
             Hashtable equipos = new Hashtable();
 
-            cargarDeArchivo("..\\..\\..\\..\\infoEj1.txt", equipos);
-
+            cargarDeArchivo("..\\..\\..\\infoEj1.txt", equipos);
             int opcion = 0;
             while (opcion !=5)
             {
@@ -280,31 +288,40 @@ namespace Ejercicio1
                 Console.WriteLine("4- Mostrar un elemento de la colección");
                 Console.WriteLine("5- Salir");
                 Console.WriteLine("Qué quieres hacer?");
-                opcion = Convert.ToInt32(Console.ReadLine());
 
-                switch (opcion)
+                try
                 {
-                    case 1:
-                        introducirDato(equipos);
-                        break;
+                    opcion = Convert.ToInt32(Console.ReadLine());
 
-                    case 2:
-                        eliminarDato(equipos);
-                        break;
+                    switch (opcion)
+                    {
+                        case 1:
+                            introducirDato(equipos);
+                            break;
 
-                    case 3:
-                        mostrarColeccion(equipos);
-                        break;
+                        case 2:
+                            eliminarDato(equipos);
+                            break;
 
-                    case 4:
-                        mostrarElemento(equipos);
-                        break;
+                        case 3:
+                            mostrarColeccion(equipos);
+                            break;
 
-                    case 5:
-                        Console.WriteLine("Adiós!");
+                        case 4:
+                            mostrarElemento(equipos);
+                            break;
 
-                        guardarEnArchivo("..\\..\\..\\..\\infoEj1.txt", equipos);
-                        break;
+                        case 5:
+                            Console.WriteLine("Adiós!");
+
+                            guardarEnArchivo("..\\..\\..\\infoEj1.txt", equipos);
+                            break;
+                    }
+                }
+                catch (OverflowException)
+                {
+                    Console.WriteLine("Has escrito un número mucho más grande al que deberías escribir, cuidado con lo que haces!");
+                    Console.WriteLine();
                 }
             }
         }
