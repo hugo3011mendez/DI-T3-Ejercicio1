@@ -215,15 +215,21 @@ namespace Ejercicio1
         }
 
 
-        // TODO : Hacer el apartado b)
         static void guardarEnArchivo(String ruta, Hashtable equipos)
         {
-            using (StreamWriter sw = new StreamWriter(ruta))
+            if (File.Exists(ruta))
             {
-                foreach (DictionaryEntry de in equipos)
+                using (StreamWriter sw = new StreamWriter(ruta))
                 {
-                    sw.WriteLine("{0}|{1}", de.Key, de.Value);
+                    foreach (DictionaryEntry de in equipos)
+                    {
+                        sw.WriteLine("{0}|{1}", de.Key, de.Value);
+                    }
                 }
+            }
+            else
+            {
+                File.Create(ruta);
             }
         }
 
@@ -250,6 +256,10 @@ namespace Ejercicio1
                 }
                 sr.Close();
             }
+            else
+            {
+                File.Create(ruta);
+            }
         }
 
 
@@ -258,7 +268,7 @@ namespace Ejercicio1
         {
             Hashtable equipos = new Hashtable();
 
-            cargarDeArchivo("C:\\Users\\Hugo\\Desktop\\Desarrollo de Interfaces\\T3\\infoEj1.txt", equipos);
+            cargarDeArchivo("..\\..\\..\\..\\infoEj1.txt", equipos);
 
             int opcion = 0;
             while (opcion !=5)
@@ -293,7 +303,7 @@ namespace Ejercicio1
                     case 5:
                         Console.WriteLine("Adiós!");
 
-                        guardarEnArchivo("C:\\Users\\Hugo\\Desktop\\Desarrollo de Interfaces\\T3\\infoEj1.txt", equipos);
+                        guardarEnArchivo("..\\..\\..\\..\\infoEj1.txt", equipos);
                         break;
                 }
             }
