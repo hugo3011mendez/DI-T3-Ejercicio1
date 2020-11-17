@@ -222,9 +222,8 @@ namespace Ejercicio1
         {
             try
             {
-                File.Create(ruta);
 
-                using (StreamWriter sw = new StreamWriter(ruta))
+                using (StreamWriter sw = new StreamWriter(ruta)) // Aquí salta IOException porque el archivo ya está siendo abierto por otro proceso
                 {
                     foreach (DictionaryEntry de in equipos)
                     {
@@ -236,10 +235,10 @@ namespace Ejercicio1
             {
                 Console.WriteLine("Error : No se ha encontrado la ruta indicada del archivo");
             }
-            catch (IOException)
-            {
-                Console.WriteLine("Error al guardar los datos en el archivo");
-            }
+            //catch (IOException)
+            //{
+            //    Console.WriteLine("Error al guardar los datos en el archivo");
+            //}
         }
 
 
@@ -254,25 +253,22 @@ namespace Ejercicio1
                     string ip;
                     int ram;
 
-                    StreamReader sr = new StreamReader(ruta);
-                    datos = sr.ReadLine();
-                    while (datos != null)
+                    using (StreamReader sr = new StreamReader(ruta))
                     {
-                        ip = datos.Split('|')[0];
-                        ram = Convert.ToInt32(datos.Split('|')[1]);
-
-                        if (!equipos.ContainsKey(ip))
-                        {
-                            equipos.Add(ip, ram);
-                        }
-
                         datos = sr.ReadLine();
+                        while (datos != null)
+                        {
+                            ip = datos.Split('|')[0];
+                            ram = Convert.ToInt32(datos.Split('|')[1]);
+
+                            if (!equipos.ContainsKey(ip))
+                            {
+                                equipos.Add(ip, ram);
+                            }
+
+                            datos = sr.ReadLine();
+                        }
                     }
-                    sr.Close();
-                }
-                else
-                {
-                    File.Create(ruta);
                 }
             }
             catch (DirectoryNotFoundException)
