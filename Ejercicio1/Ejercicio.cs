@@ -12,130 +12,134 @@ namespace Ejercicio1
     class Ejercicio
     {
         // Creo una función para pedir la IP del PC :
-        static string escribirIP()
+        static bool validarIP(String ip)
         {
             bool verificadaIP = false;
-            string ip = "";
 
-            while (!verificadaIP)
+            int contadorPuntos = 0;
+            int contadorLetras = 0;
+
+            for (int i = 0; i < ip.Length; i++)
             {
-                Console.WriteLine("Escribe la IP del ordenador :");
-                ip = Console.ReadLine();
-
-                int contadorPuntos = 0;
-                int contadorLetras = 0;
-
-                for (int i = 0; i < ip.Length; i++)
+                if (Char.IsLetter(ip[i]))
                 {
-                    if (Char.IsLetter(ip[i]))
-                    {
-                        contadorLetras++;
-                    }
-
-                    if (ip[i] == '.')
-                    {
-                        contadorPuntos++;
-                    }
+                    contadorLetras++;
                 }
 
-
-                if (contadorPuntos == 3 && contadorLetras == 0)
+                if (ip[i] == '.')
                 {
-                    try
-                    {
-                        int contador = 0;
-
-                        for (int i = 0; i < ip.Split('.').Length; i++)
-                        {
-                            if (Convert.ToInt32(ip.Split('.')[i]) < 0 || Convert.ToInt32(ip.Split('.')[i]) > 255)
-                            {
-                                verificadaIP = false;
-                            }
-                            else
-                            {
-                                contador++;
-                            }
-                        }
-
-                        if (contador == 4)
-                        {
-                            verificadaIP = true;
-                        }
-                    }
-                    // Así solo capturo las excepciones que me interesan
-                    catch (OverflowException)
-                    {
-                        verificadaIP = false;
-                        Console.WriteLine("Formato de IP incorrecto, has escrito un número demasiado grande");
-                        Console.WriteLine();
-                        Console.WriteLine();
-                    }
-                    catch (FormatException)
-                    {
-                        verificadaIP = false;
-                        Console.WriteLine("Formato de IP incorrecto, has escrito un caracter no permitido para una IP");
-                        Console.WriteLine();
-                    }
-                }
-                else
-                {
-                    verificadaIP = false;
-                    Console.WriteLine("Formato de IP incorrecto, vuelve a escribirla");
-                    Console.WriteLine();
-                    Console.WriteLine();
+                    contadorPuntos++;
                 }
             }
 
-            return ip;
+
+            if (contadorPuntos == 3 && contadorLetras == 0)
+            {
+                try
+                {
+                    int contador = 0;
+
+                    for (int i = 0; i < ip.Split('.').Length; i++)
+                    {
+                        if (Convert.ToInt32(ip.Split('.')[i]) < 0 || Convert.ToInt32(ip.Split('.')[i]) > 255)
+                        {
+                            verificadaIP = false;
+                        }
+                        else
+                        {
+                            contador++;
+                        }
+                    }
+
+                    if (contador == 4)
+                    {
+                        verificadaIP = true;
+                    }
+                }
+                // Así solo capturo las excepciones que me interesan
+                catch (OverflowException)
+                {
+                    verificadaIP = false;
+                    Console.WriteLine("Formato de IP incorrecto, has escrito un número demasiado grande");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                }
+                catch (FormatException)
+                {
+                    verificadaIP = false;
+                    Console.WriteLine("Formato de IP incorrecto, has escrito un caracter no permitido para una IP");
+                    Console.WriteLine();
+                }
+            }
+            else
+            {
+                verificadaIP = false;
+                Console.WriteLine("Formato de IP incorrecto, vuelve a escribirla");
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+
+            return verificadaIP;
         }
 
 
         // Creo otra función para escribir la memoria RAM en GB :
-        static int escribirRAM()
+        static bool validarRAM(int ram)
         {
             bool verificado = false;
-            int ram = 0;
 
-            while (!verificado)
+            try
             {
-                try
-                {
-                    Console.WriteLine("Escribe la cantidad de memoria RAM en GB que tiene el equipo :");
-                    ram = Convert.ToInt32(Console.ReadLine());
 
-                    if (ram <= 0)
-                    {
-                        verificado = false;
-                        Console.WriteLine("Has introducido una cantidad inválida de RAM, repite");
-                        Console.WriteLine();
-                        Console.WriteLine();
-                    }
-                    else
-                    {
-                        verificado = true;
-                    }
-                }
-                catch (OverflowException)
+                if (ram <= 0)
                 {
                     verificado = false;
-                    Console.WriteLine("Has escrito un número demasiado grande, anda con más cuidado!");
+                    Console.WriteLine("Has introducido una cantidad inválida de RAM, repite");
+                    Console.WriteLine();
+                    Console.WriteLine();
                 }
-                catch (FormatException)
+                else
                 {
-                    verificado = false;
-                    Console.WriteLine("El formato del número de memoria RAM es incorrecto, vuelve a escribirlo!");
+                    verificado = true;
                 }
             }
+            catch (OverflowException)
+            {
+                verificado = false;
+                Console.WriteLine("Has escrito un número demasiado grande, anda con más cuidado!");
+            }
+            catch (FormatException)
+            {
+                verificado = false;
+                Console.WriteLine("El formato del número de memoria RAM es incorrecto, vuelve a escribirlo!");
+            }
+            
 
-            return ram;
+            return verificado;
         }
 
 
         // Creo la función para introducir un nuevo elemento en la Hashtable, que llamará a los otros dos métodos que validan la pedida de datos :
         static void introducirDato(Hashtable equipos)
         {
-            string ip = escribirIP();
-            int ram = escribirRAM();
+            string ip = "";
+            int ram = 0;
+
+            do
+            {
+                Console.WriteLine("Escribe la IP del ordenador :");
+                ip = Console.ReadLine();
+
+                do
+                {
+                    Console.WriteLine("Escribe la cantidad de memoria RAM en GB que tiene el equipo :");
+                    ram = Convert.ToInt32(Console.ReadLine());
+
+                } while (!validarRAM(ram));
+
+
+            } while (!validarIP(ip));
+
 
             if (equipos.ContainsKey(ip))
             {
@@ -195,7 +199,6 @@ namespace Ejercicio1
         // Función para mostrar el elemento indicado
         static void mostrarElemento(Hashtable equipos)
         {
-            bool encontrado = false;
             string ip = "";
             Console.WriteLine("Escribe la IP del equipo que quieres ver :");
             ip = Console.ReadLine();
@@ -223,7 +226,7 @@ namespace Ejercicio1
             try
             {
 
-                using (StreamWriter sw = new StreamWriter(ruta)) // Aquí salta IOException porque el archivo ya está siendo abierto por otro proceso
+                using (StreamWriter sw = new StreamWriter(ruta))
                 {
                     foreach (DictionaryEntry de in equipos)
                     {
@@ -235,10 +238,10 @@ namespace Ejercicio1
             {
                 Console.WriteLine("Error : No se ha encontrado la ruta indicada del archivo");
             }
-            //catch (IOException)
-            //{
-            //    Console.WriteLine("Error al guardar los datos en el archivo");
-            //}
+            catch (IOException)
+            {
+                Console.WriteLine("Error al guardar los datos en el archivo");
+            }
         }
 
 
@@ -261,10 +264,16 @@ namespace Ejercicio1
                             ip = datos.Split('|')[0];
                             ram = Convert.ToInt32(datos.Split('|')[1]);
 
-                            if (!equipos.ContainsKey(ip))
+                            // Al cargar del archivo compruebo que no haya datos en un formato incorrecto
+                            if (validarIP(ip) && validarRAM(ram))
                             {
-                                equipos.Add(ip, ram);
+                                if (!equipos.ContainsKey(ip))
+                                {
+                                    equipos.Add(ip, ram);
+                                }
                             }
+
+
 
                             datos = sr.ReadLine();
                         }
