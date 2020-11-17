@@ -341,6 +341,11 @@ namespace Ejercicio1
                     Console.WriteLine("Has escrito un número mucho más grande al que deberías escribir, cuidado con lo que haces!");
                     Console.WriteLine();
                 }
+                catch (FormatException)
+                {
+                    Console.WriteLine("No has escrito un número! Asegúrate de escribir un valor numérico");
+                    Console.WriteLine();
+                }
             }
         }
     }
